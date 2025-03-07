@@ -1,6 +1,4 @@
 <script setup>
-import axios from "axios";
-import { useRoute } from "vue-router";
 import { reactive, ref } from "vue";
 import 'element-plus/theme-chalk/el-loading.css'
 import 'element-plus/theme-chalk/el-message.css'
@@ -10,10 +8,6 @@ import { exportExcel } from "@/utils/excel.js";
 import { createLoading, warningMessage } from "@/utils/stateHelper.js";
 import { ElMessageBox } from "element-plus";
 import { Delete } from "@element-plus/icons-vue";
-
-const route = useRoute();
-
-const { uuid } = route.query;
 
 const RefElTable = ref();
 const tableName = ref('');
@@ -26,12 +20,6 @@ const tableStatus = reactive({
   editColIdx: -1,
   editHeaderIdx: -1,
 })
-
-if(uuid) {
-  axios.get(`https://mapc.cqphx.cn:4443/ai-api/ai/userAgent/search?uuid=${uuid}`).then(res => {
-    setData(res.data.data);
-  })
-}
 
 
 function setData(data) {
@@ -233,7 +221,7 @@ function startHeaderEdit(colIdx) {
   tableStatus.editHeaderIdx = colIdx;
 }
 
-function onInputBlur(rowIdx, colIdx) {
+function onInputBlur() {
   tableStatus.editRowIdx = -1;
   tableStatus.editColIdx = -1;
 }
@@ -315,7 +303,7 @@ testData();
       <el-scrollbar v-else always class="pr-2">
         <el-table :data="tableDataList" ref="RefElTable" style="width: 100%" stripe border>
           <el-table-column
-              v-for="(item, itemIdx) in tableHeader"
+              v-for="(_, itemIdx) in tableHeader"
               :prop="getColName(itemIdx)"
               :label="tableHeader[itemIdx]"
           >
